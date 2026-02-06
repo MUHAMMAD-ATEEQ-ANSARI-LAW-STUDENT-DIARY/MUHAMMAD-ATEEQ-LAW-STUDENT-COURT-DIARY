@@ -19,21 +19,461 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; background: url('https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; background-size: cover; margin: 0; padding: 15px; color: var(--text); transition: 0.3s; }
         .overlay-layer { background: linear-gradient(to bottom, rgba(0, 43, 94, 0.8), rgba(240, 242, 245, 0.9)); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; transition: 0.3s; }
 
-        /* Login Screen Style */
-        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; color: white; }
-        .login-card { background: var(--card); padding: 40px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center; width: 320px; color: var(--text); border: 2px solid var(--gold); }
-
+        /* Security Login Screen */
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 10000; display: flex; justify-content: center; align-items: center; }
+        .login-box { background: var(--card); padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.5); width: 350px; border: 2px solid var(--gold); }
+        
         .grid-container { max-width: 1580px; margin: auto; display: grid; grid-template-columns: 420px 1fr; gap: 20px; position: relative; padding-top: 20px; display: none; }
         header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 3px solid var(--gold); }
         .header-right { display: flex; align-items: center; gap: 20px; }
-        .theme-toggle { background: var(--gold); color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .theme-toggle { background: var(--gold); color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; font-size: 12px; }
         .user-name { font-size: 20px; font-weight: bold; color: var(--gold); display: flex; align-items: center; gap: 10px; }
         
         .stats-header { grid-column: 1 / -1; display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
-        .stat-box { flex: 1; min-width: 150px; background: var(--card); padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); cursor: pointer; color: var(--text); border: 1px solid var(--border); }
+        .stat-box { flex: 1; min-width: 150px; background: var(--card); padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); cursor: pointer; transition: 0.3s; color: var(--text); border: 1px solid var(--border); }
+        .stat-box:hover { transform: translateY(-3px); }
         .active-filter { background: var(--accent) !important; color: white !important; }
         
-        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); margin-bottom: 20px; border: 1px solid var(--border); }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); margin-bottom: 20px; border: 1px solid var(--border); transition: 0.3s; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--input-bg); color: var(--text); font-size: 14px; }
+        .row-flex { display: flex; gap: 8px; }
+        
+        .btn { border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; color: white; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; transition: 0.3s; }
+        .btn-save { background: var(--gold); color: #000; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-clear { background: #7f8c8d; }
+        .btn-reset { background: #c0392b; }
+        .btn-excel-green { background: #27ae60 !important; }
+        .btn-pdf-red { background: #c0392b !important; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; background: transparent; }
+        thead th { background: var(--primary); color: #ffffff; padding: 18px 15px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; border-right: 1px solid rgba(255,255,255,0.1); border-bottom: 3px solid var(--gold); font-weight: 900 !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        tbody tr { background: var(--card); box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; }
+        tbody td { padding: 15px; vertical-align: top; border: none; }
+
+        .tag-box { border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; min-width: 100px; display: block; font-size: 12px; border-left: 5px solid; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .tag-box small { color: var(--gold) !important; font-weight: 800 !important; text-transform: uppercase; font-size: 10px; letter-spacing: 0.8px; display: block; margin-bottom: 4px; border-bottom: 1.5px solid rgba(197, 160, 89, 0.4); padding-bottom: 2px; }
+        .tag-box b { color: inherit; font-weight: 700; }
+
+        .tag-court { background: #fff3e0; color: #e65100; border-color: #ff9800; }
+        .tag-judge { background: #f3e5f5; color: #7b1fa2; border-color: #9c27b0; }
+        .tag-dist { background: #e8f5e9; color: #1b5e20; border-color: #4caf50; }
+        .tag-section { background: #fffde7; color: #f57f17; border-color: #fbc02d; }
+        .tag-case { background: #e3f2fd; color: #0d47a1; border-color: #2196f3; }
+        .tag-stage { background: #263238; color: #ffffff; border-color: #000000; }
+        .tag-party { background: #f1f8e9; color: #33691e; border-color: #8bc34a; }
+        .tag-side { background: #e0f2f1; color: #004d40; border-color: #009688; }
+        .tag-date { background: #e8eaf6; color: #1a237e; border-color: #3f51b5; }
+        .tag-time { background: #fce4ec; color: #880e4f; border-color: #f06292; }
+        .tag-wakeel { background: #e0f7fa; color: #006064; border-color: #00bcd4; }
+        .tag-company { background: #eceff1; color: #263238; border-color: #607d8b; }
+        
+        .history-box { margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 5px; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; margin-bottom: 3px; font-size: 11px; border-left: 3px solid var(--secondary); }
+        .dustbin-icon { color: var(--secondary); cursor: pointer; font-size: 12px; margin-left: 8px; }
+
+        .tag-mark { background: #8e24aa; color: white; padding: 5px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; display: inline-block; font-size: 12px; text-align: center; min-width: 60px; transition: 0.3s; }
+        .marked-present { background: #27ae60 !important; }
+        .attendance-time { display: block; font-size: 9px; margin-top: 3px; color: #fff; }
+
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .day { padding: 8px; border: 1px solid var(--border); cursor: pointer; border-radius: 4px; font-size: 12px; background: var(--input-bg); position: relative; min-height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
+        .day.today-marker { background: var(--today-bg) !important; border: 2px solid var(--today-border) !important; font-weight: bold; }
+        .case-dot { background: #e74c3c; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .action-icon { cursor: pointer; font-size: 20px; margin: 0 5px; }
+        .export-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
+        @media (max-width: 900px) { .grid-container { grid-template-columns: 1fr; } .export-row { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <div id="loginOverlay">
+        <div class="login-box">
+            <i class="fas fa-user-shield" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
+            <h2 style="color: var(--text); margin-bottom: 20px;">ATEEQ DIARY LOGIN</h2>
+            <input type="password" id="entryPass" placeholder="Enter Master Password" style="text-align: center; font-size: 18px; padding: 15px; margin-bottom: 20px;">
+            <button class="btn btn-save" onclick="unlockDiary()">UNSEAL DIARY</button>
+            <p id="errorMsg" style="color: red; display: none; margin-top: 15px;">Invalid Password! Please try again.</p>
+        </div>
+    </div>
+
+    <div class="overlay-layer"></div>
+    <div class="grid-container" id="appMain">
+        <header>
+            <div class="user-name"><i class="fas fa-gavel"></i> MUHAMMAD ATEEQ LAW STUDENT DIARY (SECURE)</div>
+            <div class="header-right">
+                <span id="backupStatus" style="font-size: 11px; color: var(--gold);">Live Cloud Sync: ON</span>
+                <div id="clock" style="font-weight: bold;"></div>
+                <button class="theme-toggle" onclick="toggleDarkMode()">
+                    <i id="themeIcon" class="fas fa-moon"></i> <span id="themeText">DARK MODE</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="stats-header">
+            <div class="stat-box active-filter" id="f-all" onclick="setFilter('all')"><small>TOTAL CASES</small><br><strong id="st-all" style="font-size:22px">0</strong></div>
+            <div class="stat-box" id="f-today" onclick="setFilter('today')"><small>TODAY ALL CASES</small><br><strong id="st-today" style="font-size:22px">0</strong></div>
+            <div class="stat-box" id="f-pending" onclick="setFilter('pending')"><small>ALL PENDING CASE</small><br><strong id="st-pend" style="font-size:22px">0</strong></div>
+            <div class="stat-box" id="f-disposal" onclick="setFilter('disposal')"><small>ALL DISPOSED CASE</small><br><strong id="st-disp" style="font-size:22px">0</strong></div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <h4 id="monthYearText" style="margin:0; color:var(--gold);"></h4>
+                    <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-grid">
+                    <div style="color:var(--secondary)">S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div style="color:var(--secondary)">S</div>
+                </div>
+                <div id="calGrid" class="calendar-grid"></div>
+            </div>
+
+            <div class="card" id="formContainer">
+                <h3 style="margin:0 0 10px 0; color:var(--gold);" id="formTitle">NEW ENTRY</h3>
+                <input type="hidden" id="editId">
+                <input type="text" id="courtName" placeholder="Court Name and Number">
+                <input type="text" id="judgeName" placeholder="Judge Name">
+                <input type="text" id="dist" placeholder="District Name">
+                <div class="row-flex">
+                    <input type="text" id="caseName" placeholder="Case Name / Info" style="flex:2;">
+                    <input type="text" id="caseNo" placeholder="Case Number" style="flex:1;">
+                </div>
+                <input type="text" id="underSection" placeholder="Under Section (e.g. 302 PPC)">
+                <input type="text" id="caseStage" placeholder="Current Stage">
+                <select id="partySide">
+                    <option value="">-- PARTY SIDE --</option>
+                    <option>APPLICANT</option><option>LANDLORD</option><option>PLAINTIFF</option>
+                    <option>APPELLANT</option><option>RESPONDENT</option><option>OPPONENT</option>
+                    <option>COMPLAINANT</option><option>ACCUSED</option><option>PURPOSE ACCUSED</option>
+                    <option>PETITIONER</option><option>RESPONDER</option>
+                </select>
+                <input type="text" id="partyStep" placeholder="Party Side Number Step (e.g. Petitioner No. 1)">
+                <input type="text" id="pName" placeholder="Party Name">
+                <input type="text" id="pPhone" placeholder="WhatsApp Number">
+                <input type="text" id="advName" placeholder="Advocate Name">
+                <input type="text" id="advCompany" placeholder="Advocate Company Name">
+                <select id="caseStatus"><option value="Active / Pending">Active / Pending</option><option value="Disposal">Disposal</option></select>
+                <div class="row-flex">
+                    <div style="flex:1"><small style="color:var(--gold)">Hearing Date:</small><input type="date" id="cDate"></div>
+                    <div style="flex:1"><small style="color:var(--gold)">Time:</small><input type="time" id="cTime"></div>
+                </div>
+                
+                <button class="btn btn-save" onclick="saveData()"><i class="fas fa-save"></i> SAVE TO CLOUD LIVE</button>
+                <button class="btn btn-whatsapp" onclick="shareFullBackupWhatsApp()"><i class="fab fa-whatsapp"></i> SHARE DIARY LINK</button>
+                <button class="btn btn-clear" onclick="clearForm()"><i class="fas fa-eraser"></i> CLEAR FORM</button>
+
+                <div style="margin-top: 25px; border-top: 2px solid var(--border); padding-top: 15px;">
+                    <h4 style="margin: 0 0 10px 0; color: var(--gold);">SECURITY SETTINGS</h4>
+                    <input type="password" id="newMasterPass" placeholder="Enter New Password">
+                    <button class="btn" style="background: #34495e;" onclick="updateMasterPassword()">CHANGE MASTER PASSWORD</button>
+                </div>
+                <button class="btn btn-reset" onclick="allResetData()" style="margin-top: 20px;"><i class="fas fa-trash-alt"></i> RESET ALL DATA</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <input type="text" id="searchGen" placeholder="🔍 Search (Court, Judge, Dist, Case, Section, Stage, Party, Advocate, Date)..." onkeyup="render()" style="padding:15px;">
+                <div class="export-row">
+                    <button class="btn btn-excel-green" onclick="smartExport('excel')"><i class="fas fa-file-excel"></i> EXCEL HISTORY</button>
+                    <button class="btn btn-pdf-red" onclick="smartExport('daily')"><i class="fas fa-file-pdf"></i> DAILY PDF</button>
+                    <button class="btn btn-pdf-red" onclick="smartExport('pending')"><i class="fas fa-file-pdf"></i> PENDING PDF</button>
+                    <button class="btn btn-pdf-red" onclick="smartExport('disposal')"><i class="fas fa-file-pdf"></i> DISPOSAL PDF</button>
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table id="caseTable">
+                    <thead>
+                        <tr>
+                            <th>SR.</th>
+                            <th>COURT / JUDGE / DIST</th>
+                            <th>UNDER SECTION</th>
+                            <th>CASE INFO / STAGE / HISTORY</th>
+                            <th>PARTY / SIDE</th>
+                            <th>NEXT DATE / TIME</th>
+                            <th>ADVOCATE NAME / COMPANY NAME</th>
+                            <th>ATT.</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkBnimb8vggtD7150m5H_UhSjZ7LDTwiI",
+            authDomain: "muhammad-ateeq-law-student.firebaseapp.com",
+            databaseURL: "https://muhammad-ateeq-law-student-default-rtdb.firebaseio.com",
+            projectId: "muhammad-ateeq-law-student",
+            storageBucket: "muhammad-ateeq-law-student.firebasestorage.app",
+            messagingSenderId: "287583661760",
+            appId: "1:287583661760:web:a3cdd9d7b8a66441944725"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        let db = [];
+        let currentFilter = 'all', calViewDate = new Date(), selectedCalendarDate = "";
+        let masterPass = "1234"; // Default
+
+        // 1. Load Live Password from Cloud
+        database.ref('settings/password').on('value', (snap) => {
+            if(snap.val()) masterPass = snap.val();
+        });
+
+        // 2. Load Live Cases from Cloud
+        database.ref('cases').on('value', (snapshot) => {
+            db = [];
+            snapshot.forEach((child) => {
+                let item = child.val();
+                item.id = child.key;
+                db.push(item);
+            });
+            render();
+        });
+
+        // --- SECURITY FUNCTIONS ---
+        function unlockDiary() {
+            const input = document.getElementById('entryPass').value;
+            if(input === masterPass) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('appMain').style.display = 'grid';
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        function updateMasterPassword() {
+            const newPass = document.getElementById('newMasterPass').value;
+            if(newPass.length < 4) return alert("Password must be at least 4 characters!");
+            database.ref('settings/password').set(newPass).then(() => {
+                alert("Master Password updated on Cloud!");
+                location.reload();
+            });
+        }
+
+        // --- CORE FUNCTIONS ---
+        async function universalShare(textToShare) {
+            if (navigator.share) {
+                try { await navigator.share({ title: 'ATEEQ DIARY', text: textToShare }); }
+                catch (err) { window.open(`https://wa.me/?text=${encodeURIComponent(textToShare)}`, '_blank'); }
+            } else { window.open(`https://wa.me/?text=${encodeURIComponent(textToShare)}`, '_blank'); }
+        }
+
+        function render() {
+            const body = document.getElementById('tableBody');
+            const sGen = document.getElementById('searchGen').value.toLowerCase().trim();
+            body.innerHTML = '';
+            let todayStr = new Date().toISOString().split('T')[0];
+            
+            let stats = { all: db.length, today: 0, pend: 0, disp: 0 };
+            db.forEach(c => {
+                if(c.date === todayStr) stats.today++;
+                if(c.status === 'Disposal') stats.disp++; else stats.pend++;
+            });
+            document.getElementById('st-all').innerText = stats.all;
+            document.getElementById('st-today').innerText = stats.today;
+            document.getElementById('st-pend').innerText = stats.pend;
+            document.getElementById('st-disp').innerText = stats.disp;
+
+            let srCount = 1;
+            db.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(c => {
+                const content = [c.courtName, c.judgeName, c.dist, c.caseName, c.caseNo, c.underSection, c.caseStage, c.pName, c.side, c.adv, c.advComp, c.date].join(' ').toLowerCase();
+                
+                let visible = true;
+                if(currentFilter === 'today' && c.date !== todayStr) visible = false;
+                if(currentFilter === 'pending' && c.status === 'Disposal') visible = false;
+                if(currentFilter === 'disposal' && c.status !== 'Disposal') visible = false;
+                if(selectedCalendarDate && c.date !== selectedCalendarDate) visible = false;
+                if(sGen && !content.includes(sGen)) visible = false;
+                
+                if(visible) {
+                    let historyHtml = "";
+                    if(c.history && c.history.length > 0) {
+                        historyHtml = `<div class="history-box">`;
+                        c.history.forEach((h, idx) => {
+                            historyHtml += `<div class="history-item"><span>📅 ${h.oldDate} - ${h.oldStage}</span><i class="fas fa-trash-alt dustbin-icon" onclick="deleteHistoryItem('${c.id}', ${idx})"></i></div>`;
+                        });
+                        historyHtml += `</div>`;
+                    }
+
+                    body.innerHTML += `<tr>
+                        <td style="font-weight:bold; color:var(--gold); font-size:16px;">${srCount++}</td>
+                        <td>
+                            <div class="tag-box tag-court"><small>COURT:</small><b>${c.courtName||'---'}</b></div>
+                            <div class="tag-box tag-judge"><small>JUDGE:</small><b>${c.judgeName||'---'}</b></div>
+                            <div class="tag-box tag-dist"><small>DISTRICT:</small><b>${c.dist||'---'}</b></div>
+                        </td>
+                        <td><div class="tag-box tag-section"><small>U/S:</small><b>${c.underSection||'---'}</b></div></td>
+                        <td>
+                            <div class="tag-box tag-case"><small>CASE INFO:</small><b>${c.caseName||'---'} ${c.caseNo ? '('+c.caseNo+')' : ''}</b></div>
+                            <div class="tag-box tag-stage"><small>STAGE:</small><b>${c.caseStage||'---'}</b></div>
+                            ${historyHtml}
+                        </td>
+                        <td>
+                            <div class="tag-box tag-party"><small>PARTY:</small><b>${c.pName||'---'}</b></div>
+                            <div class="tag-box tag-side"><small>SIDE:</small><b>${c.side||'---'} ${c.pStep||''}</b></div>
+                        </td>
+                        <td>
+                            <div class="tag-box tag-date"><small>DATE:</small><b>${c.date||'---'}</b></div>
+                            <div class="tag-box tag-time"><small>TIME:</small><b>${c.time||'---'}</b></div>
+                        </td>
+                        <td>
+                            <div class="tag-box tag-wakeel"><small>ADVOCATE:</small><b>${c.adv||'---'}</b></div>
+                            <div class="tag-box tag-company"><small>COMPANY:</small><b>${c.advComp||'---'}</b></div>
+                        </td>
+                        <td>
+                            <div class="tag-mark ${c.attended ? 'marked-present' : ''}" onclick="markAtt('${c.id}')">
+                                ${c.attended ? '✅ <span class="attendance-time">'+(c.attTime||'')+'</span>' : 'Mark'}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:8px;">
+                                <i class="fab fa-whatsapp action-icon" style="color:#25D366;" onclick='shareSingleCaseWhatsApp(${JSON.stringify(c)})'></i>
+                                <i class="fas fa-file-pdf action-icon" style="color:#e74c3c;" onclick='downloadSingleCasePDF(${JSON.stringify(c)})'></i>
+                                <i class="fas fa-edit action-icon" style="color:#2196f3" onclick="editCase('${c.id}')"></i>
+                                <i class="fas fa-trash action-icon" style="color:#f44336" onclick="deleteCase('${c.id}')"></i>
+                            </div>
+                        </td>
+                    </tr>`;
+                }
+            });
+            renderCalendar();
+        }
+
+        function saveData() {
+            const id = document.getElementById('editId').value;
+            const newDate = document.getElementById('cDate').value;
+            const newStage = document.getElementById('caseStage').value;
+
+            const data = {
+                courtName: document.getElementById('courtName').value,
+                judgeName: document.getElementById('judgeName').value,
+                dist: document.getElementById('dist').value,
+                caseName: document.getElementById('caseName').value,
+                caseNo: document.getElementById('caseNo').value,
+                underSection: document.getElementById('underSection').value,
+                caseStage: newStage,
+                side: document.getElementById('partySide').value,
+                pStep: document.getElementById('partyStep').value,
+                pName: document.getElementById('pName').value,
+                pPhone: document.getElementById('pPhone').value,
+                adv: document.getElementById('advName').value,
+                advComp: document.getElementById('advCompany').value,
+                status: document.getElementById('caseStatus').value,
+                date: newDate,
+                time: document.getElementById('cTime').value
+            };
+
+            if(!data.caseName || !data.date) return alert("Case Name & Date required!");
+
+            if(id) {
+                const old = db.find(x => x.id === id);
+                let hist = old.history || [];
+                if(old.date !== newDate) hist.push({ oldDate: old.date, oldStage: old.caseStage });
+                database.ref('cases/'+id).update({...data, history: hist});
+            } else {
+                database.ref('cases').push({...data, attended: false, history: []});
+            }
+            clearForm();
+        }
+
+        function markAtt(id) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            database.ref('cases/'+id).update({ attended: true, attTime: time });
+        }
+
+        function deleteHistoryItem(caseId, idx) {
+            const c = db.find(x => x.id === caseId);
+            c.history.splice(idx, 1);
+            database.ref('cases/'+caseId).update({ history: c.history });
+        }
+
+        function editCase(id) {
+            const c = db.find(x => x.id === id);
+            document.getElementById('editId').value = id;
+            document.getElementById('courtName').value = c.courtName||'';
+            document.getElementById('judgeName').value = c.judgeName||'';
+            document.getElementById('dist').value = c.dist||'';
+            document.getElementById('caseName').value = c.caseName||'';
+            document.getElementById('caseNo').value = c.caseNo||'';
+            document.getElementById('underSection').value = c.underSection||'';
+            document.getElementById('caseStage').value = c.caseStage||'';
+            document.getElementById('partySide').value = c.side||'';
+            document.getElementById('partyStep').value = c.pStep||'';
+            document.getElementById('pName').value = c.pName||'';
+            document.getElementById('pPhone').value = c.pPhone||'';
+            document.getElementById('advName').value = c.adv||'';
+            document.getElementById('advCompany').value = c.advComp||'';
+            document.getElementById('cDate').value = c.date||'';
+            document.getElementById('cTime').value = c.time||'';
+            window.scrollTo(0,0);
+        }
+
+        function deleteCase(id) { if(confirm("Delete Case?")) database.ref('cases/'+id).remove(); }
+        function allResetData() { if(confirm("Clear Everything on Cloud?")) database.ref('cases').remove(); }
+        function clearForm() { document.querySelectorAll('#formContainer input, #formContainer select').forEach(i => i.value = ''); document.getElementById('editId').value = ''; }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calGrid'); grid.innerHTML = '';
+            const y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+            document.getElementById('monthYearText').innerText = new Intl.DateTimeFormat('en-US', {month:'long', year:'numeric'}).format(calViewDate);
+            const first = new Date(y, m, 1).getDay();
+            const last = new Date(y, m+1, 0).getDate();
+            for(let i=0; i<first; i++) grid.innerHTML += `<div></div>`;
+            for(let d=1; d<=last; d++) {
+                const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const count = db.filter(c => c.date === ds).length;
+                grid.innerHTML += `<div class="day" onclick="selectDate('${ds}')">${d}${count > 0 ? `<div class="case-dot">${count}</div>` : ''}</div>`;
+            }
+        }
+
+        function selectDate(d) { selectedCalendarDate = (selectedCalendarDate === d) ? "" : d; render(); }
+        function changeMonth(v) { calViewDate.setMonth(calViewDate.getMonth() + v); renderCalendar(); }
+        function setFilter(t) { currentFilter = t; render(); }
+
+        function smartExport(type) {
+            let data = db;
+            if(type === 'pending') data = db.filter(c => c.status !== 'Disposal');
+            if(type === 'disposal') data = db.filter(c => c.status === 'Disposal');
+            if(type === 'excel') {
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Diary");
+                XLSX.writeFile(wb, "Ateeq_Diary.xlsx");
+            } else {
+                const { jsPDF } = window.jspdf; const doc = new jsPDF('l');
+                doc.autoTable({ head: [['Date','Court','Case','Stage']], body: data.map(c => [c.date, c.courtName, c.caseName, c.caseStage]) });
+                doc.save(`Report_${type}.pdf`);
+            }
+        }
+
+        async function shareFullBackupWhatsApp() { await universalShare(`Mera Live Diary Link: ${window.location.href}`); }
+        async function shareSingleCaseWhatsApp(c) { 
+            const msg = `*ATEEQ DIARY CASE*\nCourt: ${c.courtName}\nCase: ${c.caseName}\nStage: ${c.caseStage}\nDate: ${c.date}`;
+            await universalShare(msg); 
+        }
+        
+        function downloadSingleCasePDF(c) {
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.text("CASE SLIP - ATEEQ DIARY", 14, 15);
+            doc.autoTable({ body: Object.entries(c).filter(([k]) => k !== 'history' && k !== 'id') });
+            doc.save("Case_Slip.pdf");
+        }
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
+        window.onload = render;
+    </script>
+</body>
+</html>
         input, select, textarea { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--input-bg); color: var(--text); font-size: 14px; }
         .row-flex { display: flex; gap: 8px; }
         
