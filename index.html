@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUHAMMAD ATEEQ LAW STUDENT DIARY - Secure Cloud</title>
+    <title>MUHAMMAD ATEEQ LAW STUDENT DIARY - Professional Cloud</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13,27 +13,256 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <style>
-        :root { --primary: #002b5e; --secondary: #c0392b; --success: #27ae60; --bg: rgba(240, 242, 245, 0.9); --card: #ffffff; --text: #1c1e21; --border: #dddfe2; --input-bg: #f5f6f7; --gold: #c5a059; --accent: #002b5e; --today-bg: rgba(197, 160, 89, 0.3); --today-border: #c5a059; }
-        body.dark-mode { --bg: rgba(13, 17, 23, 0.95); --card: #161b22; --text: #c9d1d9; --border: #30363d; --input-bg: #0d1117; --gold: #d29922; --accent: #1f6feb; --today-bg: rgba(210, 153, 34, 0.4); --today-border: #d29922; }
+        :root { --primary: #002b5e; --secondary: #c0392b; --success: #27ae60; --bg: rgba(240, 242, 245, 0.9); --card: #ffffff; --text: #1c1e21; --border: #dddfe2; --input-bg: #f5f6f7; --gold: #c5a059; --accent: #002b5e; --today-bg: rgba(197, 160, 89, 0.4); --today-border: #c5a059; }
+        body.dark-mode { --bg: rgba(13, 17, 23, 0.95); --card: #161b22; --text: #c9d1d9; --border: #30363d; --input-bg: #0d1117; --gold: #d29922; --accent: #1f6feb; --today-bg: rgba(210, 153, 34, 0.5); --today-border: #d29922; }
         
         body { font-family: 'Segoe UI', Arial, sans-serif; background: url('https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; background-size: cover; margin: 0; padding: 15px; color: var(--text); transition: 0.3s; }
-        .overlay-layer { background: linear-gradient(to bottom, rgba(0, 43, 94, 0.8), rgba(240, 242, 245, 0.9)); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; transition: 0.3s; }
+        .overlay-layer { background: linear-gradient(to bottom, rgba(0, 43, 94, 0.8), rgba(240, 242, 245, 0.9)); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
-        /* Security Login Screen */
+        /* Login Screen */
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 10000; display: flex; justify-content: center; align-items: center; }
         .login-box { background: var(--card); padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.5); width: 350px; border: 2px solid var(--gold); }
         
-        .grid-container { max-width: 1580px; margin: auto; display: grid; grid-template-columns: 420px 1fr; gap: 20px; position: relative; padding-top: 20px; display: none; }
-        header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 3px solid var(--gold); }
-        .header-right { display: flex; align-items: center; gap: 20px; }
-        .theme-toggle { background: var(--gold); color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; font-size: 12px; }
-        .user-name { font-size: 20px; font-weight: bold; color: var(--gold); display: flex; align-items: center; gap: 10px; }
+        .grid-container { max-width: 1580px; margin: auto; display: grid; grid-template-columns: 420px 1fr; gap: 20px; padding-top: 20px; display: none; }
+        header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: white; padding: 15px 25px; border-radius: 12px; border-bottom: 3px solid var(--gold); }
         
-        .stats-header { grid-column: 1 / -1; display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
-        .stat-box { flex: 1; min-width: 150px; background: var(--card); padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); cursor: pointer; transition: 0.3s; color: var(--text); border: 1px solid var(--border); }
-        .stat-box:hover { transform: translateY(-3px); }
+        .stat-box { flex: 1; min-width: 150px; background: var(--card); padding: 15px; border-radius: 10px; text-align: center; border-top: 5px solid var(--gold); cursor: pointer; border: 1px solid var(--border); }
         .active-filter { background: var(--accent) !important; color: white !important; }
         
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); margin-bottom: 20px; border: 1px solid var(--border); }
+        input, select, textarea { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; background: var(--input-bg); color: var(--text); }
+        
+        .btn { border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; color: white; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-save { background: var(--gold); color: #000; }
+        .btn-whatsapp { background: #25D366; }
+        .btn-excel { background: #27ae60; }
+        .btn-pdf { background: #c0392b; }
+
+        /* Calendar Styling */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .day { padding: 8px; border: 1px solid var(--border); cursor: pointer; border-radius: 4px; background: var(--input-bg); min-height: 45px; position: relative; }
+        .day.today-marker { background: var(--today-bg) !important; border: 2.5px solid var(--today-border) !important; font-weight: 900; box-shadow: 0 0 8px var(--gold); }
+        .case-dot { background: #e74c3c; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin: auto; display: flex; align-items: center; justify-content: center; }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        thead th { background: var(--primary); color: white; padding: 15px; border-bottom: 3px solid var(--gold); text-align: left; }
+        tbody tr { background: var(--card); }
+        tbody td { padding: 12px; }
+
+        .tag-box { border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; font-size: 12px; border-left: 5px solid; }
+        .tag-box small { color: var(--gold); font-weight: 800; display: block; border-bottom: 1px solid rgba(197, 160, 89, 0.3); }
+        
+        .tag-court { background: #fff3e0; color: #e65100; border-color: #ff9800; }
+        .tag-case { background: #e3f2fd; color: #0d47a1; border-color: #2196f3; }
+        .tag-stage { background: #263238; color: white; border-color: #000; }
+        
+        .tag-mark { background: #8e24aa; color: white; padding: 5px; border-radius: 5px; cursor: pointer; text-align: center; font-size: 11px; }
+        .marked-present { background: #27ae60 !important; }
+        @media (max-width: 900px) { .grid-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2 style="color: var(--text);">ATEEQ DIARY LOGIN</h2>
+            <input type="password" id="passInput" placeholder="Enter Password" style="text-align: center;">
+            <button class="btn btn-save" onclick="unlock()">LOGIN</button>
+            <p id="err" style="color:red; display:none;">Wrong Password!</p>
+        </div>
+    </div>
+
+    <div class="overlay-layer"></div>
+    <div class="grid-container" id="mainContainer">
+        <header>
+            <div style="font-size:20px; font-weight:bold; color:var(--gold);">MUHAMMAD ATEEQ LAW STUDENT DIARY</div>
+            <div id="clock"></div>
+            <button class="btn" style="width:auto; background:var(--gold); color:black;" onclick="toggleDarkMode()">THEME</button>
+        </header>
+
+        <div style="grid-column: 1/-1; display:flex; gap:10px; margin-top:10px;">
+            <div class="stat-box active-filter" id="f-all" onclick="setFilter('all')">TOTAL: <span id="st-all">0</span></div>
+            <div class="stat-box" id="f-today" onclick="setFilter('today')">TODAY: <span id="st-today">0</span></div>
+            <div class="stat-box" id="f-pending" onclick="setFilter('pending')">PENDING: <span id="st-pend">0</span></div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:10px;">
+                    <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <h4 id="monthYearText"></h4>
+                    <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-grid"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>
+                <div id="calGrid" class="calendar-grid"></div>
+            </div>
+
+            <div class="card" id="form">
+                <input type="hidden" id="editId">
+                <input type="text" id="court" placeholder="Court Name">
+                <input type="text" id="case" placeholder="Case Name">
+                <input type="text" id="stage" placeholder="Current Stage">
+                <input type="text" id="party" placeholder="Party Name">
+                <input type="text" id="adv" placeholder="Advocate Name">
+                <select id="status"><option value="Pending">Pending</option><option value="Disposal">Disposal</option></select>
+                <div style="display:flex; gap:5px;">
+                    <input type="date" id="date">
+                    <input type="time" id="time">
+                </div>
+                <button class="btn btn-save" onclick="save()">SAVE TO CLOUD</button>
+                <button class="btn" style="background:#34495e" onclick="changePass()">CHANGE PASSWORD</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="card">
+                <input type="text" id="search" placeholder="Search anything..." onkeyup="render()">
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn btn-excel" onclick="exportData('excel')">EXCEL REPORT</button>
+                    <button class="btn btn-pdf" onclick="exportData('pdf')">PDF REPORT</button>
+                </div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead><tr><th>SR.</th><th>COURT/JUDGE</th><th>CASE INFO</th><th>DATE/TIME</th><th>ATT.</th><th>ACTION</th></tr></thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkBnimb8vggtD7150m5H_UhSjZ7LDTwiI",
+            databaseURL: "https://muhammad-ateeq-law-student-default-rtdb.firebaseio.com",
+            projectId: "muhammad-ateeq-law-student"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        let db = [], masterPass = "1234", currentFilter = 'all', calDate = new Date();
+
+        database.ref('settings/password').on('value', s => masterPass = s.val() || "1234");
+        database.ref('cases').on('value', s => {
+            db = []; s.forEach(c => { let x = c.val(); x.id = c.key; db.push(x); });
+            render();
+        });
+
+        function unlock() {
+            if(document.getElementById('passInput').value === masterPass) {
+                document.getElementById('loginOverlay').style.display='none';
+                document.getElementById('mainContainer').style.display='grid';
+            } else document.getElementById('err').style.display='block';
+        }
+
+        function render() {
+            const body = document.getElementById('tbody');
+            const search = document.getElementById('search').value.toLowerCase();
+            body.innerHTML = '';
+            let today = new Date().toISOString().split('T')[0];
+            
+            let filtered = db.filter(c => {
+                const text = JSON.stringify(c).toLowerCase();
+                if(search && !text.includes(search)) return false;
+                if(currentFilter === 'today' && c.date !== today) return false;
+                if(currentFilter === 'pending' && c.status === 'Disposal') return false;
+                return true;
+            });
+
+            document.getElementById('st-all').innerText = db.length;
+            document.getElementById('st-today').innerText = db.filter(x => x.date === today).length;
+            document.getElementById('st-pend').innerText = db.filter(x => x.status !== 'Disposal').length;
+
+            filtered.forEach((c, i) => {
+                body.innerHTML += `<tr>
+                    <td>${i+1}</td>
+                    <td><div class="tag-box tag-court"><small>COURT</small>${c.court}</div></td>
+                    <td><div class="tag-box tag-case"><small>CASE</small>${c.case}</div><div class="tag-box tag-stage"><small>STAGE</small>${c.stage}</div></td>
+                    <td>${c.date} | ${c.time}</td>
+                    <td><div class="tag-mark ${c.att ? 'marked-present' : ''}" onclick="mark('${c.id}')">${c.att ? 'PRESENT' : 'MARK'}</div></td>
+                    <td><i class="fas fa-edit" onclick="edit('${c.id}')"></i> | <i class="fas fa-trash" onclick="del('${c.id}')"></i></td>
+                </tr>`;
+            });
+            renderCal();
+        }
+
+        function renderCal() {
+            const grid = document.getElementById('calGrid'); grid.innerHTML = '';
+            const y = calDate.getFullYear(), m = calDate.getMonth();
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+            
+            document.getElementById('monthYearText').innerText = new Intl.DateTimeFormat('en-US',{month:'long', year:'numeric'}).format(calDate);
+            const first = new Date(y, m, 1).getDay();
+            const last = new Date(y, m+1, 0).getDate();
+
+            for(let i=0; i<first; i++) grid.innerHTML += `<div></div>`;
+            for(let d=1; d<=last; d++) {
+                const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const count = db.filter(x => x.date === ds).length;
+                let cls = ds === todayStr ? 'day today-marker' : 'day';
+                grid.innerHTML += `<div class="${cls}" onclick="setD('${ds}')">${d} ${count?`<div class="case-dot">${count}</div>`:''}</div>`;
+            }
+        }
+
+        function exportData(type) {
+            const key = prompt("Search filter (Khali choren for ALL):");
+            if(key === null) return;
+            const searchKey = key.toLowerCase();
+            const data = db.filter(c => JSON.stringify(c).toLowerCase().includes(searchKey));
+            
+            if(type === 'excel') {
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Diary");
+                XLSX.writeFile(wb, "Ateeq_Diary.xlsx");
+            } else {
+                const { jsPDF } = window.jspdf; const doc = new jsPDF('l');
+                doc.autoTable({ head: [['Date','Court','Case','Stage']], body: data.map(c => [c.date, c.court, c.case, c.stage]) });
+                doc.save("Report.pdf");
+            }
+        }
+
+        function save() {
+            const id = document.getElementById('editId').value;
+            const data = {
+                court: document.getElementById('court').value,
+                case: document.getElementById('case').value,
+                stage: document.getElementById('stage').value,
+                party: document.getElementById('party').value,
+                adv: document.getElementById('adv').value,
+                status: document.getElementById('status').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value
+            };
+            if(id) database.ref('cases/'+id).update(data);
+            else database.ref('cases').push({...data, att: false});
+            clear();
+        }
+
+        function changePass() {
+            const p = prompt("Enter New Password:");
+            if(p) database.ref('settings/password').set(p).then(() => alert("Saved!"));
+        }
+
+        function mark(id) { database.ref('cases/'+id).update({att: true}); }
+        function del(id) { if(confirm("Delete?")) database.ref('cases/'+id).remove(); }
+        function edit(id) { 
+            const c = db.find(x => x.id === id);
+            document.getElementById('editId').value = id;
+            document.getElementById('court').value = c.court;
+            document.getElementById('case').value = c.case;
+            document.getElementById('date').value = c.date;
+        }
+        function clear() { document.querySelectorAll('#form input').forEach(i => i.value=''); document.getElementById('editId').value=''; }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function changeMonth(v) { calDate.setMonth(calDate.getMonth()+v); renderCal(); }
+        function setFilter(f) { currentFilter = f; render(); }
+        function setD(d) { document.getElementById('search').value = d; render(); }
+        setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleString(), 1000);
+    </script>
+</body>
+</html>
         .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); margin-bottom: 20px; border: 1px solid var(--border); transition: 0.3s; }
         input, select, textarea { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--input-bg); color: var(--text); font-size: 14px; }
         .row-flex { display: flex; gap: 8px; }
