@@ -3,37 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUHAMMAD ATEEQ LAW DIARY - LIVE</title>
+    <title>MUHAMMAD ATEEQ LAW STUDENT DIARY - Secure Cloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <style>
-        :root { --primary: #002b5e; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Arial; background: var(--bg); margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        .case-card { background: #fff; border-left: 5px solid var(--primary); padding: 15px; margin-top: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .case-card h3 { margin: 0 0 5px 0; color: #333; }
-        .case-card p { margin: 3px 0; font-size: 14px; color: #666; }
+        :root { --primary: #002b5e; --secondary: #c0392b; --success: #27ae60; --bg: rgba(240, 242, 245, 0.9); --card: #ffffff; --text: #1c1e21; --border: #dddfe2; --input-bg: #f5f6f7; --gold: #c5a059; --accent: #002b5e; --today-bg: rgba(197, 160, 89, 0.3); --today-border: #c5a059; }
+        body.dark-mode { --bg: rgba(13, 17, 23, 0.95); --card: #161b22; --text: #c9d1d9; --border: #30363d; --input-bg: #0d1117; --gold: #d29922; --accent: #1f6feb; --today-bg: rgba(210, 153, 34, 0.4); --today-border: #d29922; }
+        
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: url('https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; background-size: cover; margin: 0; padding: 15px; color: var(--text); transition: 0.3s; }
+        .overlay-layer { background: linear-gradient(to bottom, rgba(0, 43, 94, 0.8), rgba(240, 242, 245, 0.9)); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; transition: 0.3s; }
+
+        /* Login Screen Style */
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; color: white; }
+        .login-card { background: var(--card); padding: 40px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center; width: 320px; color: var(--text); border: 2px solid var(--gold); }
+
+        .grid-container { max-width: 1580px; margin: auto; display: grid; grid-template-columns: 420px 1fr; gap: 20px; position: relative; padding-top: 20px; display: none; }
+        header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 3px solid var(--gold); }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .theme-toggle { background: var(--gold); color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .user-name { font-size: 20px; font-weight: bold; color: var(--gold); display: flex; align-items: center; gap: 10px; }
+        
+        .stats-header { grid-column: 1 / -1; display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .stat-box { flex: 1; min-width: 150px; background: var(--card); padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); cursor: pointer; color: var(--text); border: 1px solid var(--border); }
+        .active-filter { background: var(--accent) !important; color: white !important; }
+        
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); margin-bottom: 20px; border: 1px solid var(--border); }
+        input, select, textarea { width: 100%; padding: 10px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--input-bg); color: var(--text); font-size: 14px; }
+        .row-flex { display: flex; gap: 8px; }
+        
+        .btn { border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; color: white; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; transition: 0.3s; }
+        .btn-save { background: var(--gold); color: #000; }
+        .btn-whatsapp { background: #25D366; }
+        .btn-reset { background: #c0392b; }
+        .btn-excel-green { background: #27ae60; }
+        .btn-pdf-red { background: #c0392b; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        thead th { background: var(--primary); color: #ffffff; padding: 18px 15px; text-align: left; font-size: 13px; text-transform: uppercase; border-bottom: 3px solid var(--gold); }
+        tbody tr { background: var(--card); box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; }
+        tbody td { padding: 15px; vertical-align: top; }
+
+        .tag-box { border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; font-size: 12px; border-left: 5px solid; }
+        .tag-box small { color: var(--gold); font-weight: 800; display: block; border-bottom: 1.5px solid rgba(197, 160, 89, 0.4); }
+
+        .tag-court { background: #fff3e0; color: #e65100; border-color: #ff9800; }
+        .tag-judge { background: #f3e5f5; color: #7b1fa2; border-color: #9c27b0; }
+        .tag-dist { background: #e8f5e9; color: #1b5e20; border-color: #4caf50; }
+        .tag-section { background: #fffde7; color: #f57f17; border-color: #fbc02d; }
+        .tag-case { background: #e3f2fd; color: #0d47a1; border-color: #2196f3; }
+        .tag-stage { background: #263238; color: #ffffff; border-color: #000000; }
+        .tag-party { background: #f1f8e9; color: #33691e; border-color: #8bc34a; }
+        .tag-side { background: #e0f2f1; color: #004d40; border-color: #009688; }
+        .tag-date { background: #e8eaf6; color: #1a237e; border-color: #3f51b5; }
+        .tag-wakeel { background: #e0f7fa; color: #006064; border-color: #00bcd4; }
+        
+        .history-box { margin-top: 10px; border-top: 1px dashed var(--border); }
+        .history-item { display: flex; justify-content: space-between; background: rgba(0,0,0,0.05); padding: 4px; font-size: 11px; margin-bottom: 2px; }
+        
+        .tag-mark { background: #8e24aa; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+        .marked-present { background: #27ae60 !important; }
+
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .day { padding: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--input-bg); min-height: 45px; }
+        .day.today-marker { background: var(--today-bg) !important; border: 2px solid var(--today-border) !important; }
+        .case-dot { background: #e74c3c; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; margin: auto; }
+        .action-icon { cursor: pointer; font-size: 20px; margin: 0 5px; }
+        @media (max-width: 900px) { .grid-container { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
-<div class="container">
-    <h2>⚖️ Court Diary (Cloud)</h2>
-    <input type="text" id="caseTitle" placeholder="Case Title / Name">
-    <input type="text" id="courtName" placeholder="Court Name">
-    <input type="date" id="caseDate">
-    <textarea id="caseDetails" rows="3" placeholder="Case Details..."></textarea>
-    <button onclick="saveCase()">Save Case to Cloud</button>
-
-    <div id="caseList">
-        <p style="text-align:center;">Loading cases...</p>
+    <div id="loginScreen">
+        <div class="login-card">
+            <i class="fas fa-lock" style="font-size: 40px; color: var(--gold); margin-bottom: 20px;"></i>
+            <h3>ATEEQ DIARY LOGIN</h3>
+            <input type="password" id="loginPass" placeholder="Enter Diary Password" style="text-align: center; margin-bottom: 15px;">
+            <button class="btn btn-save" onclick="checkLogin()">LOGIN NOW</button>
+            <p id="loginError" style="color: red; font-size: 12px; margin-top: 10px; display: none;">Wrong Password! Try again.</p>
+        </div>
     </div>
-</div>
 
-<script>
+    <div class="overlay-layer"></div>
+    <div class="grid-container" id="mainApp">
+        <header>
+            <div class="user-name"><i class="fas fa-gavel"></i> MUHAMMAD ATEEQ LAW STUDENT DIARY</div>
+            <div class="header-right">
+                <span id="backupStatus" style="font-size: 11px; color: var(--gold);">Live Cloud Secure</span>
+                <div id="clock" style="font-weight: bold;"></div>
+                <button class="theme-toggle" onclick="toggleDarkMode()">DARK MODE</button>
+            </div>
+        </header>
+
+        <div class="stats-header">
+            <div class="stat-box active-filter" id="f-all" onclick="setFilter('all')"><small>TOTAL CASES</small><br><strong id="st-all" style="font-size:22px">0</strong></div>
+            <div class="stat-box" id="f-today" onclick="setFilter('today')"><small>TODAY ALL CASES</small><br><strong id="st-today" style="font-size:22px">0</strong></div>
+            <div class="stat-box" id="f-pending" onclick="setFilter('pending')"><small>ALL PENDING CASE</small><br><strong id="st-pend" style="font-size:22px">0</strong></div>
+            <div class="stat-box" id="f-disposal" onclick="setFilter('disposal')"><small>ALL DISPOSED CASE</small><br><strong id="st-disp" style="font-size:22px">0</strong></div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <h4 id="monthYearText" style="margin:0; color:var(--gold);"></h4>
+                    <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-grid">
+                    <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                </div>
+                <div id="calGrid" class="calendar-grid"></div>
+            </div>
+
+            <div class="card" id="formContainer">
+                <h3 style="margin:0 0 10px 0; color:var(--gold);">NEW ENTRY</h3>
+                <input type="hidden" id="editId">
+                <input type="text" id="courtName" placeholder="Court Name and Number">
+                <input type="text" id="judgeName" placeholder="Judge Name">
+                <input type="text" id="dist" placeholder="District Name">
+                <div class="row-flex">
+                    <input type="text" id="caseName" placeholder="Case Name / Info" style="flex:2;">
+                    <input type="text" id="caseNo" placeholder="Case Number" style="flex:1;">
+                </div>
+                <input type="text" id="underSection" placeholder="Under Section (e.g. 302 PPC)">
+                <input type="text" id="caseStage" placeholder="Current Stage">
+                <select id="partySide">
+                    <option value="">-- PARTY SIDE --</option>
+                    <option>APPLICANT</option><option>LANDLORD</option><option>PLAINTIFF</option>
+                    <option>APPELLANT</option><option>RESPONDENT</option><option>OPPONENT</option>
+                    <option>COMPLAINANT</option><option>ACCUSED</option>
+                </select>
+                <input type="text" id="partyStep" placeholder="Party Side Number Step (e.g. Petitioner No. 1)">
+                <input type="text" id="pName" placeholder="Party Name">
+                <input type="text" id="pPhone" placeholder="WhatsApp Number">
+                <input type="text" id="advName" placeholder="Advocate Name">
+                <input type="text" id="advCompany" placeholder="Advocate Company Name">
+                <select id="caseStatus"><option value="Active / Pending">Active / Pending</option><option value="Disposal">Disposal</option></select>
+                <div class="row-flex">
+                    <div style="flex:1"><small>Hearing Date:</small><input type="date" id="cDate"></div>
+                    <div style="flex:1"><small>Time:</small><input type="time" id="cTime"></div>
+                </div>
+                
+                <button class="btn btn-save" onclick="saveData()"><i class="fas fa-save"></i> SAVE TO CLOUD</button>
+                <button class="btn btn-whatsapp" onclick="shareFullBackupWhatsApp()"><i class="fab fa-whatsapp"></i> SHARE DIARY LINK</button>
+                <button class="btn btn-clear" onclick="clearForm()">CLEAR FORM</button>
+
+                <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 10px;">
+                    <small style="color: var(--gold);">SECURITY SETTINGS</small>
+                    <input type="password" id="newDiaryPass" placeholder="New Password">
+                    <button class="btn" style="background: #34495e; font-size: 11px;" onclick="changePassword()">CHANGE DIARY PASSWORD</button>
+                </div>
+                <button class="btn btn-reset" onclick="allResetData()" style="margin-top: 30px;">DELETE ALL CLOUD DATA</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <input type="text" id="searchGen" placeholder="🔍 Search Cases..." onkeyup="render()" style="padding:15px;">
+                <div style="display: flex; gap: 5px; margin-top: 10px;">
+                    <button class="btn btn-excel-green" onclick="smartExport('excel')">EXCEL</button>
+                    <button class="btn btn-pdf-red" onclick="smartExport('daily')">DAILY PDF</button>
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SR.</th>
+                            <th>COURT/JUDGE</th>
+                            <th>U/S</th>
+                            <th>CASE INFO / STAGE</th>
+                            <th>PARTY/SIDE</th>
+                            <th>DATE/TIME</th>
+                            <th>ADVOCATE</th>
+                            <th>ATT.</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkBnimb8vggtD7150m5H_UhSjZ7LDTwiI",
+            authDomain: "muhammad-ateeq-law-student.firebaseapp.com",
+            databaseURL: "https://muhammad-ateeq-law-student-default-rtdb.firebaseio.com",
+            projectId: "muhammad-ateeq-law-student",
+            storageBucket: "muhammad-ateeq-law-student.firebasestorage.app",
+            messagingSenderId: "287583661760",
+            appId: "1:287583661760:web:a3cdd9d7b8a66441944725"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        let db = [];
+        let currentFilter = 'all', calViewDate = new Date(), selectedCalendarDate = "";
+        let masterPassword = "";
+
+        // Cloud se Password aur Data uthana
+        database.ref('settings/password').on('value', (snap) => {
+            masterPassword = snap.val() || "1234"; // Default password if empty
+        });
+
+        database.ref('cases').on('value', (snapshot) => {
+            db = [];
+            snapshot.forEach((child) => {
+                let item = child.val();
+                item.id = child.key;
+                db.push(item);
+            });
+            render();
+        });
+
+        // Login System
+        function checkLogin() {
+            const pass = document.getElementById('loginPass').value;
+            if(pass === masterPassword) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'grid';
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function changePassword() {
+            const newPass = document.getElementById('newDiaryPass').value;
+            if(newPass.length < 4) return alert("Password kam se kam 4 digits ka hona chahiye!");
+            database.ref('settings/password').set(newPass)
+            .then(() => alert("Password Successfully Changed! Next time naya password chalega."));
+        }
+
+        function render() {
+            const body = document.getElementById('tableBody');
+            const sGen = document.getElementById('searchGen').value.toLowerCase();
+            body.innerHTML = '';
+            let todayStr = new Date().toISOString().split('T')[0];
+            
+            let stats = { all: db.length, today: 0, pend: 0, disp: 0 };
+            db.forEach(c => {
+                if(c.date === todayStr) stats.today++;
+                if(c.status === 'Disposal') stats.disp++; else stats.pend++;
+            });
+            document.getElementById('st-all').innerText = stats.all;
+            document.getElementById('st-today').innerText = stats.today;
+            document.getElementById('st-pend').innerText = stats.pend;
+            document.getElementById('st-disp').innerText = stats.disp;
+
+            db.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach((c, i) => {
+                const searchTxt = [c.courtName, c.caseName, c.pName, c.date, c.adv].join(' ').toLowerCase();
+                if(sGen && !searchTxt.includes(sGen)) return;
+                if(currentFilter === 'today' && c.date !== todayStr) return;
+                if(currentFilter === 'pending' && c.status === 'Disposal') return;
+                if(currentFilter === 'disposal' && c.status !== 'Disposal') return;
+                if(selectedCalendarDate && c.date !== selectedCalendarDate) return;
+
+                let histHtml = "";
+                if(c.history) c.history.forEach(h => {
+                    histHtml += `<div class="history-item"><span>${h.oldDate}</span><span>${h.oldStage}</span></div>`;
+                });
+
+                body.innerHTML += `<tr>
+                    <td>${i+1}</td>
+                    <td>
+                        <div class="tag-box tag-court"><small>COURT</small>${c.courtName||''}</div>
+                        <div class="tag-box tag-judge"><small>JUDGE</small>${c.judgeName||''}</div>
+                    </td>
+                    <td><div class="tag-box tag-section">${c.underSection||''}</div></td>
+                    <td>
+                        <div class="tag-box tag-case"><small>CASE</small>${c.caseName||''} (${c.caseNo||''})</div>
+                        <div class="tag-box tag-stage"><small>STAGE</small>${c.caseStage||''}</div>
+                        <div class="history-box">${histHtml}</div>
+                    </td>
+                    <td>
+                        <div class="tag-box tag-party"><small>PARTY</small>${c.pName||''}</div>
+                        <div class="tag-box tag-side"><small>SIDE</small>${c.side||''} ${c.pStep||''}</div>
+                    </td>
+                    <td>
+                        <div class="tag-box tag-date">${c.date||''}</div>
+                        <div class="tag-box tag-time">${c.time||''}</div>
+                    </td>
+                    <td><div class="tag-box tag-wakeel">${c.adv||''}</div></td>
+                    <td>
+                        <div class="tag-mark ${c.attended ? 'marked-present' : ''}" onclick="markAtt('${c.id}')">
+                            ${c.attended ? '✅ ' + (c.attTime||'') : 'Mark'}
+                        </div>
+                    </td>
+                    <td>
+                        <i class="fas fa-edit action-icon" style="color:#2196f3" onclick="editCase('${c.id}')"></i>
+                        <i class="fas fa-trash action-icon" style="color:#f44336" onclick="deleteCase('${c.id}')"></i>
+                    </td>
+                </tr>`;
+            });
+            renderCalendar();
+        }
+
+        function saveData() {
+            const id = document.getElementById('editId').value;
+            const newDate = document.getElementById('cDate').value;
+            const data = {
+                courtName: document.getElementById('courtName').value,
+                judgeName: document.getElementById('judgeName').value,
+                dist: document.getElementById('dist').value,
+                caseName: document.getElementById('caseName').value,
+                caseNo: document.getElementById('caseNo').value,
+                underSection: document.getElementById('underSection').value,
+                caseStage: document.getElementById('caseStage').value,
+                side: document.getElementById('partySide').value,
+                pStep: document.getElementById('partyStep').value,
+                pName: document.getElementById('pName').value,
+                pPhone: document.getElementById('pPhone').value,
+                adv: document.getElementById('advName').value,
+                advComp: document.getElementById('advCompany').value,
+                status: document.getElementById('caseStatus').value,
+                date: newDate,
+                time: document.getElementById('cTime').value
+            };
+
+            if(id) {
+                const old = db.find(x => x.id === id);
+                let hist = old.history || [];
+                if(old.date !== newDate) hist.push({oldDate: old.date, oldStage: old.caseStage});
+                database.ref('cases/'+id).update({...data, history: hist});
+            } else {
+                database.ref('cases').push({...data, attended: false, history: []});
+            }
+            clearForm();
+        }
+
+        function markAtt(id) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            database.ref('cases/'+id).update({ attended: true, attTime: time });
+        }
+
+        function editCase(id) {
+            const c = db.find(x => x.id === id);
+            document.getElementById('editId').value = id;
+            document.getElementById('courtName').value = c.courtName||'';
+            document.getElementById('caseName').value = c.caseName||'';
+            document.getElementById('cDate').value = c.date||'';
+            document.getElementById('caseStage').value = c.caseStage||'';
+            window.scrollTo(0,0);
+        }
+
+        function deleteCase(id) { if(confirm("Delete?")) database.ref('cases/'+id).remove(); }
+        function allResetData() { if(confirm("Clear All Cloud Data?")) database.ref('cases').remove(); }
+        function clearForm() { document.querySelectorAll('#formContainer input, #formContainer select').forEach(i => i.value = ''); document.getElementById('editId').value = ''; }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calGrid'); grid.innerHTML = '';
+            const y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+            document.getElementById('monthYearText').innerText = new Intl.DateTimeFormat('en-US', {month:'long', year:'numeric'}).format(calViewDate);
+            const first = new Date(y, m, 1).getDay();
+            const last = new Date(y, m+1, 0).getDate();
+            for(let i=0; i<first; i++) grid.innerHTML += `<div></div>`;
+            for(let d=1; d<=last; d++) {
+                const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const count = db.filter(c => c.date === ds).length;
+                grid.innerHTML += `<div class="day" onclick="selectDate('${ds}')">${d}${count > 0 ? `<div class="case-dot">${count}</div>` : ''}</div>`;
+            }
+        }
+
+        function selectDate(d) { selectedCalendarDate = (selectedCalendarDate === d) ? "" : d; render(); }
+        function changeMonth(v) { calViewDate.setMonth(calViewDate.getMonth() + v); renderCalendar(); }
+        function setFilter(t) { currentFilter = t; render(); }
+
+        function smartExport(type) {
+            if(type === 'excel') {
+                const ws = XLSX.utils.json_to_sheet(db);
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Diary");
+                XLSX.writeFile(wb, "Diary_Cloud.xlsx");
+            } else {
+                const { jsPDF } = window.jspdf; const doc = new jsPDF('l');
+                doc.autoTable({ head: [['Date','Court','Case','Stage']], body: db.map(c => [c.date, c.courtName, c.caseName, c.caseStage]) });
+                doc.save("Daily_Report.pdf");
+            }
+        }
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
+        window.onload = render;
+    </script>
+</body>
+</html>
     // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDkBnimb8vggtD7150m5H_UhSjZ7LDTwiI",
